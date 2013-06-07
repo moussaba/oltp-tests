@@ -1,0 +1,8 @@
+solution:
+    name: "flashcache"
+    named_args:
+        target_devices: "/dev/sda1"
+        SSD_devices: "/dev/rssda"
+        cache_mode: "thru"
+        mount_point: "./test_tmp/data"
+        flashcache_mod: "modules/Ubuntu-10.10-3.2.28/flashcache.ko"

@@ -1,0 +1,6 @@
+solution:
+    name: "vfcache"
+    named_args:
+        mount_point: "./test_tmp/data"
+        SSD_device:  "/dev/rssda"
+        source_device: "/dev/sdd"

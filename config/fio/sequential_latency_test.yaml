@@ -1,0 +1,36 @@
+binary: "fio"
+
+name: "fio"
+
+global:
+    thread: 
+    numjobs: 1
+    iodepth: 1
+    cpus_allowed: "1,2,3,4,5,6,7,8,9,10,11,12"
+    size: 100g
+    group_reporting:
+    bs: 4k
+    norandommap: 1
+    randrepeat: 0
+    direct: 1
+    ioengine: "libaio"
+    runtime: 120
+    time_based:
+
+jobs:
+    read-4k:
+        rw: rw
+        rwmixread: 100
+        rwmixwrite: 0
+        stonewall:
+
+    write-4k:
+        rw: rw
+        rwmixread: 0
+        rwmixwrite: 100
+        stonewall:
+
+sweeps:
+    global:
+        numjobs: [1]
+        iodepth: [1]

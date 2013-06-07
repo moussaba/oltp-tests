@@ -1,0 +1,61 @@
+binary: "fio"
+
+name: "fio"
+
+global:
+    thread: 
+    numjobs: 1
+    iodepth: 1
+    cpus_allowed: "1,2,3,4,5,6,7,8,9,10,11,12"
+    size: 100g
+    group_reporting:
+    bs: 4k
+    norandommap: 1
+    randrepeat: 0
+    direct: 1
+    ioengine: "libaio"
+    runtime: 120
+    time_based:
+
+jobs:
+    rand-read-write-0-100:
+        rw: randrw
+        rwmixread: 0
+        rwmixwrite: 100
+        stonewall:
+
+    rand-read-write-10-90:
+        rw: randrw
+        rwmixread: 10
+        rwmixwrite: 90
+        stonewall:
+
+    rand-read-write-30-70:
+        rw: randrw
+        rwmixread: 30
+        rwmixwrite: 70
+        stonewall:
+
+    rand-read-write-50-50:
+        rw: randrw
+        rwmixread: 50
+        rwmixwrite: 50
+        stonewall:
+
+    rand-read-write-70-30:
+        rw: randrw
+        rwmixread: 70
+        rwmixwrite: 30
+        stonewall:
+
+    rand-read-write-90-10:
+        rw: randrw
+        rwmixread: 90
+        rwmixwrite: 10
+        stonewall:
+
+    rand-read-write-100-0:
+        rw: randrw
+        rwmixread: 100
+        rwmixwrite: 0
+        stonewall:

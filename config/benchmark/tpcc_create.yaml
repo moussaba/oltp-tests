@@ -1,0 +1,12 @@
+mysql:
+    dbname: "tpcc"
+
+benchmark:
+    name: "tpcc"
+    binary: "./bin/tpcc-mysql/tpcc_load"
+    src: "./bin/tpcc-mysql/src"
+    unamed_args: ["localhost", "tpcc", "root", "", 1000]
+    create_table: "./bin/tpcc-mysql/create_table.sql"
+    add_fkey_idx: "./bin/tpcc-mysql/add_fkey_idx.sql"
+
+tar_data: "/backup_data/mysql/tpcc/"

@@ -1,0 +1,7 @@
+solution:
+    name: "bcache"
+    named_args:
+        mkfs_cmd: "sudo /sbin/mkfs.xfs -f -d su=16384,sw=16 "
+        mount_point: "./test_tmp/data"
+        cache_device:  "/dev/rssda"
+        source_device: "/dev/sda"

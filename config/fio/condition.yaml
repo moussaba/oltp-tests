@@ -1,0 +1,25 @@
+binary: "fio"
+
+name: "fio"
+
+global:
+    thread: 
+    numjobs: 1
+    iodepth: 256
+    cpus_allowed: "1,2,3,4,5"
+    group_reporting:
+    refill_buffers:
+    direct: 1
+    ioengine: "libaio"
+    write_bw_log:
+    write_iops_log:
+    write_lat_log:
+    log_avg_msec: 30000
+
+jobs:
+    RandWritePass1:
+        rw: "randwrite"
+        bs: "4k"
+    RandReadPass2:
+        rw: "randread"
+        bs: "4k"

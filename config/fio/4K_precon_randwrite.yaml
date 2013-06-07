@@ -1,0 +1,21 @@
+binary: "sudo fio"
+
+name: "fio"
+
+global:
+    thread: 
+    numjobs: 7
+    iodepth: 36
+    cpus_allowed: "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15"
+    group_reporting:
+    bs: 4k
+    norandommap: 1
+    refill_buffers:
+    direct: 1
+    ioengine: "libaio"
+    runtime: 1800
+    time_based:
+
+jobs:
+    rand-write-4k:
+        rw: randwrite

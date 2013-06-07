@@ -1,0 +1,97 @@
+#!/bin/sh
+
+#
+#	Phoronix Test Suite
+#	URLs: http://www.phoronix.com, http://www.phoronix-test-suite.com/
+#	Copyright (C) 2008 - 2012, Phoronix Media
+#	Copyright (C) 2008 - 2012, Michael Larabel
+#	phoronix-test-suite: The Phoronix Test Suite is an extensible open-source testing / benchmarking platform
+#
+#	This program is free software; you can redistribute it and/or modify
+#	it under the terms of the GNU General Public License as published by
+#	the Free Software Foundation; either version 3 of the License, or
+#	(at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful,
+#	but WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#	GNU General Public License for more details.
+#
+#	You should have received a copy of the GNU General Public License
+#	along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Full path to root directory of the actual Phoronix Test Suite code
+# export PTS_DIR=$(readlink -f `dirname $0`)
+#export PTS_DIR=/home/mba/phoronix/share/phoronix-test-suite
+export PTS_MODE="CLIENT"
+
+if [ $PTS_DIR != `pwd` ]
+then
+	cd $PTS_DIR
+fi
+
+# Determine PHP binary location
+if [ ! "X$PHP_BIN" = "X" ] && [ -x $PHP_BIN ]
+then
+	export PHP_BIN=$PHP_BIN
+elif [ -x /usr/bin/php5 ] || [ -x /usr/local/bin/php5 ] || [ -x /usr/pkg/bin/php5 ]
+then
+	export PHP_BIN="php5"
+elif [ -x /usr/bin/php ] || [ -x /usr/local/bin/php ] || [ -x /usr/pkg/bin/php ]
+then
+	export PHP_BIN="php"
+elif [ -x /usr/php5/bin/php ]
+then
+	export PHP_BIN="/usr/php5/bin/php"
+elif [ -x /usr/php/bin/php ]
+then
+	export PHP_BIN="/usr/php/bin/php"
+elif [ -x /opt/bin/php ]
+then
+	export PHP_BIN="/opt/bin/php"
+elif [ -x /usr/pkg/libexec/cgi-bin/php ]
+then
+	export PHP_BIN="/usr/pkg/libexec/cgi-bin/php"
+else
+	export PHP_BIN=""
+fi
+
+# Make sure PHP is installed
+if [ "X$PHP_BIN" = "X" ]
+then
+	cat <<'EOT'
+
+PHP 5.2 or newer package must be installed for the Phoronix Test Suite
+The PHP command-line package is commonly called php-cli, php5-cli, or php.
+For more information visit: http://www.phoronix-test-suite.com/
+
+EOT
+exit
+fi
+
+# Ensure the user is in the correct directory
+if [ ! -f pts-core/phoronix-test-suite.php ]
+then
+	cat <<'EOT'
+
+To run the Phoronix Test Suite locally you must first change directories to phoronix-test-suite/ 
+or install the program using the install-sh script. For support visit: http://www.phoronix-test-suite.com/
+
+EOT
+exit
+fi
+
+# Command-specific conditions
+case "$1" in
+"test-module" | "debug-module")
+	export PTS_IGNORE_MODULES=1
+	;;
+esac
+
+# Run The Phoronix Test Suite
+PTS_EXIT_STATUS=8
+while [ $PTS_EXIT_STATUS -eq 8 ]; do
+	$PHP_BIN pts-core/phoronix-test-suite.php $@
+	PTS_EXIT_STATUS=$?
+done

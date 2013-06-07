@@ -1,0 +1,6 @@
+benchmark:
+    warm_up_time: 600
+    run_time: 300
+
+mysqld_buffer_sizes: [24G, 16G, 8G]
+trials: 5

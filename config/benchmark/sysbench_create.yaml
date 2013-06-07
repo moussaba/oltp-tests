@@ -1,0 +1,15 @@
+mysql:
+    dbname: "sbtest"
+
+benchmark:
+    name: "sysbench"
+    binary: "./bin/sysbench/sysbench"
+    named_args:
+        test: "./bin/sysbench/tests/db/parallel_prepare.lua"
+        oltp-table-size: 1000000
+        num-threads: 32
+        max-requests: 0
+        mysql-user: "root"
+    extra_args: "prepare"
+
+tar_data: "/backup_data/mysql/sysbench/"
