@@ -35,7 +35,7 @@ class JobCreateDataTemplate < SwrJob
     #puts "------partition----------"
     #@drives.partition(verbose)
     #puts "------format-------------"
-    #@drives.format(verbose)
+    @drives.format(verbose)
     #@drives.mount(verbose)
     puts "------mkdirs-------------"
     puts "Data dir" + @datadir
