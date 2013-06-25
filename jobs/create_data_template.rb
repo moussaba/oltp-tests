@@ -35,7 +35,9 @@ class JobCreateDataTemplate < SwrJob
     #puts "------partition----------"
     #@drives.partition(verbose)
     #puts "------format-------------"
-    @drives.format(verbose)
+    #@drives.format(verbose)
+    puts "-----Making File System---------"
+    shell.execute("sudo mkfs.ext4 -F #{drive}",true)
     #@drives.mount(verbose)
     puts "------mkdirs-------------"
     puts "Data dir" + @datadir
