@@ -3,7 +3,7 @@ mysql:
 
 benchmark:
     name: "sysbench"
-    binary: "./bin/sysbench/sysbench"
+    binary: "./bin/sysbench/sysbench-percona"
     named_args:
         test: "./bin/sysbench/tests/db/parallel_prepare.lua"
         oltp-table-size: 1000000
