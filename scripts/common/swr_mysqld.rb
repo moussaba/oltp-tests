@@ -68,7 +68,8 @@ class SwrMysqld
     cmd += process_short_args(@args["short_args"])
     cmd += process_unnamed_args(@args["unnamed_args"])
     cmd += " #{@args["extra_args"]} "
-    cmd += " 2>&1 | tee /tmp/swr_mysqld.log "
+    #cmd += " 2>&1 | tee /tmp/swr_mysqld.log "
+    #puts "cmd<<#{cmd}>>"
     @mysql = SwrShell.new
     return @mysql.background_execute(cmd,verbose)
   end
