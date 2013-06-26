@@ -48,5 +48,6 @@ mysql:
         #myisam_repair_threads: 1
         #myisam_recover:
         skip-grant-tables:
+        skip-name-resolve:
 
     extra_args: ""
