@@ -110,11 +110,12 @@ class JobCreateDataTemplate < SwrJob
     shell = SwrShell.new
     cmd = "sudo mysql_install_db --datadir=#{@config["mysql"]["named_args"]["datadir"]}"
     shell.execute(cmd,verbose)
-    puts "------starting mysqld with buffer_pool_size=#{buffer_pool_size}------------"
     @mysqld = SwrMysqld.new(@config["mysql"])
     if buffer_pool_size != nil
       @mysqld.args["named_args"]["innodb_buffer_pool_size"] = buffer_pool_size
     end
+    puts "------starting mysqld with buffer_pool_size=#{buffer_pool_size}------------"
+    puts "-----Buffer Pool size ----- " + @mysqld.args["named_args"]["innodb_buffer_pool_size"]
     @mysqld.start(verbose)
     sleep 60
   end
