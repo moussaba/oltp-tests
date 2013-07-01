@@ -22,7 +22,7 @@ class JobRunBenchmark < SwrJob
     if pre_condition != nil
       if pre_condition == "false"
         return false
-      end    
+      end
     end
     return true
   end
@@ -66,7 +66,7 @@ class JobRunBenchmark < SwrJob
       #shell.execute(cmd,true)
       #cmd = "sudo tar -C " + @config["mysql"]["named_args"]["datadir"] "/backup_data/" + ENV["SWR_TEST"] + "/log.tar.gz"
       #shell.execute(cmd,true)
-    else 
+    else
      puts "------mount--------------"
      @fileutils.su_mount drive + " -o nobarrier " + config["mysql"]["named_args"]["datadir"]
     end
@@ -77,7 +77,7 @@ class JobRunBenchmark < SwrJob
 
   def copy_data
       shell = SwrShell.new
-      dirloc = "/backup_data/" + ENV["SWR_TEST"]
+      dirloc = "/backup_data/mysql/" + ENV["SWR_TEST"]
       filename = dirloc + "/data.tar.gz"
       datadir = @config["mysql"]["named_args"]["datadir"]
 
@@ -141,10 +141,10 @@ j = SwrDriveInfo.new
 j.print
 verbose = true
 configs = Array.new
-configs << "config/mysql/mysql_percona.yaml" 
+configs << "config/mysql/mysql_percona.yaml"
 configs << "config/scenario/24G_1trial_1800.yaml"
 
-case ENV["SWR_TEST"] 
+case ENV["SWR_TEST"]
     when "sysbench"
 	configs << "config/benchmark/sysbench_10M_interval.yaml"
     when "sysbench-readonly"
