@@ -77,7 +77,15 @@ class JobRunBenchmark < SwrJob
 
   def copy_data
       shell = SwrShell.new
-      dirloc = "/backup_data/mysql/" + ENV["SWR_TEST"]
+      dirloc = "/backup_data/mysql/"
+      case ENV["SWR_TEST"]
+        when "sysbench"
+          dirloc = File.join(dirloc,"sysbench","10M_ROWS_100_TABLES")
+        when "sysbench-readonly"
+          dirloc = File.join(dirloc,"sysbench","10M_ROWS_100_TABLES")
+        when "tpcc"
+          dirloc = File.join(dirloc,"tpcc","2500")
+      end
       filename = dirloc + "/data.tar.gz"
       datadir = @config["mysql"]["named_args"]["datadir"]
 
