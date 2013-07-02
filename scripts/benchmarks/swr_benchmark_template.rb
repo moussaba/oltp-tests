@@ -148,4 +148,7 @@ class SwrBenchmarkTemplate
   def make(verbose=false)
   end
 
+  def set_parameters(config)
+  end
+
 end

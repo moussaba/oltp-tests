@@ -67,4 +67,12 @@ class SwrTpcc < SwrBenchmarkTemplate
     return shell.execute(cmd,verbose)
   end
 
+  def set_parameters(config)
+    warehouses = config['env']["SWR_WAREHOUSES"]
+    config["benchmark"]["unamed_args"][4] = warehouses.to_i
+    config["benchmark"]["warehouses"] = warehouses.to_i
+    config["tar_data"] += warehouses.to_s
+    config["mysql"]["dbname"] += warehouses.to_s
+  end
+
 end

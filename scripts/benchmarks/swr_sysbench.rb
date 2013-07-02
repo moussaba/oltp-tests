@@ -28,4 +28,12 @@ class SwrSysbench < SwrBenchmarkTemplate
     return timeout_run(cmd,verbose)
   end
 
+  def set_parameters(config)
+    rows = config['env']["SWR_MILLIONS_OF_ROWS"]
+    tables = config['env']["SWR_NUMBER_OF_TABLES"]
+    config["benchmark"]["named_args"]["oltp-table-size"] = 1000000 * rows.to_i
+    config["benchmark"]["named_args"]["oltp_tables_count"] = tables.to_i
+    config["tar_data"] += rows.to_s + "M"+"_ROWS_" + tables.to_s+"_TABLES"
+  end
+
 end

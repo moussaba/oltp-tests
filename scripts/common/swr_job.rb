@@ -1,50 +1,81 @@
 require File.join(File.dirname(__FILE__),'swr_common.rb')
-require File.join(File.dirname(__FILE__),'..','benchmarks','swr_benchmarks.rb')
-require File.join(File.dirname(__FILE__),'..','solutions','swr_solutions.rb')
 
 require 'yaml'
 
 class SwrJob
 
-  attr_accessor :config, :fileutils, :drives
+  attr_accessor :config, :fileutils
 
-  def initialize(configfile)
+  def initialize(args)
     @basedir = Dir.pwd
-    config = process_configfiles(configfile)
+    config = process_configfiles(args)
     @config = scrub_paths(config)
-    print_config(@config)
+    #print_config(@config)
     @fileutils = SwrFileUtils.new
-    @drives = SwrDriveHandler.new(@config["drives"])
-    @solutions = SwrSolutions.new
-    @benchmarks = SwrBenchmarks.new
   end
 
-  def process_configfiles(configfile)
-    if configfile.class == String
-      if not File.exists?(configfile)
-        raise "Configuration YAML file '#{configfile}' doesn't exist"
-      end
-      return YAML::load(File.open(configfile))
-    elsif configfile.class == Hash
-      return configfile
-    elsif configfile.class == Array
-      if configfile.length == 0
-        return get_config_from_env
-      else
-        return merge_configfiles(configfile)
-      end
+  #A job has a @config hash full of setting useful for the various layers
+  # that make up the job, mysql and sysbench for example.  We construct that
+  # hash by parsing YAML files and merging the resulting hashs mostly.
+  def process_configfiles(args)
+    #if the caller passes a Hash then we're going to assume it's a proper
+    # config hash and that we've got nothing intelligent to add.
+    if args.class == Hash
+      return args
     end
+
+    #if we've been passed an array then we're likely looking at a command line
+    # option array to parse through
+    if args.class == Array
+      #Let's strip out any SWR_*= args because they are not configfiles by
+      # convention.  We'll deal with them after we merge the configfiles.
+      configfiles = Array.new
+      args.each do |arg|
+        if not arg =~ /^SWR_[A-Z_]*=/
+          configfiles.push arg
+        end
+      end
+
+      #extract any configfiles from the environment variables.
+      # Convention: any env var starting with SWR_CONFIGFILE_ is a config file
+      # env var files are merged after commandline files
+      configfiles_from_env = get_configfiles_from_env()
+
+      configfiles_from_env.each do |file|
+        configfiles.push file
+      end
+
+      #We'll read in the YAML files and merge the hashes into one master hash
+      config = merge_configfiles(configfiles)
+
+      #Now we can handle the special args that aren't configfiles.  First we'll
+      # handle the commandline arguments then we'll merge the env vars on top.
+      config['env'] = Hash.new
+      args.each do |arg|
+        if arg =~ /^(SWR_[A-Z_]*)=(.*)/
+          config['env'][$1]=strip_parens($2)
+        end
+      end
+      ENV.keys.sort.each do |key|
+        if key =~ /^SWR_[A-Z_]*/ and not key =~ /^SWR_CONFIGFILE_/
+          config['env'][key]=ENV[key]
+        end
+      end
+      return config
+    end
+
+    #I dunno what to do here so I just return empty...
     return  Hash.new
   end
 
-  def get_config_from_env
+  def get_configfiles_from_env
     configfiles = Array.new
-    ENV.each do |key, value|
-      if key =~ /SWR_CONFIGFILE_/
-        configfiles.push File.expand_path(File.join("config",value))
+    ENV.keys.sort.each do |key|
+      if key =~ /^SWR_CONFIGFILE_/
+        configfiles.push File.expand_path(File.join("config",ENV[key]))
       end
     end
-    return merge_configfiles(configfiles.sort)
+    return configfiles
   end
 
   def merge_configfiles(configfiles)
@@ -53,7 +84,7 @@ class SwrJob
       if not File.exists?(file)
         raise "Configuration YAML file '#{file}' doesn't exist"
       end
-      puts file
+      #puts file
       src = YAML::load(File.open(file))
       do_merge(config,src)
     end
@@ -72,6 +103,16 @@ class SwrJob
         dst[k] = v
       end
     end
+  end
+
+  def strip_parens(str)
+    if str =~ /"$/
+      str.chop!
+    end
+    if str =~ /^"(.*)/
+      str = $1
+    end
+    return str
   end
 
   def scrub_paths(config)
@@ -108,19 +149,6 @@ class SwrJob
       end
       puts s
     end
-  end
-
-  def kill_all(verbose=false,status_can_be_nonzero=true)
-    stop_all(verbose)
-    @solutions.kill_all(verbose,status_can_be_nonzero)
-    @benchmarks.kill_all(verbose,status_can_be_nonzero)
-    mysqld = SwrMysqld.new("")
-    mysqld.kill_all(verbose,status_can_be_nonzero)
-  end
-
-  def stop_all(verbose=false,status_can_be_nonzero=true)
-    @solutions.stop_all(verbose,status_can_be_nonzero)
-    @benchmarks.stop_all(verbose,status_can_be_nonzero)
   end
 
   def file_exists?(file)
