@@ -1,9 +1,0 @@
-solution:
-    name: "velobit"
-    named_args:
-        mount_point: "./test_tmp/data"
-        SSD_devices: "/dev/rssda"
-        write_cache_depths: ["0", "5", "10", "15", "20", "25", "30"]
-        reserved_memory: "4G"
-        write_cache_depth: 0
-        sequential_IO_filtering: "n"

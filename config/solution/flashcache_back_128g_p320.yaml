@@ -1,9 +1,0 @@
-solution:
-    name: "flashcache"
-    named_args:
-        target_devices: "/dev/sdd1"
-        SSD_devices: "/dev/rssda"
-        cache_mode: "back"
-        cache_size: 128g
-        mount_point: "./test_tmp/data"
-        flashcache_mod: "modules/CentOS5.7-2.6.18/flashcache.ko"
