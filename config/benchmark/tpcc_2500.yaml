@@ -1,7 +1,7 @@
 mysql:
     dbname: "tpcc2500"
 
-#Usage: tpcc_start -h server_host -P port -d database_name -u mysql_user -p mysql_password 
+#Usage: tpcc_start -h server_host -P port -d database_name -u mysql_user -p mysql_password
 # -w warehouses -c connections -r warmup_time -l running_time -i report_interval -f report_file
 
 benchmark:
@@ -22,11 +22,4 @@ benchmark:
     warm_up_time: 90
     run_time: 300
 
-drives:
-    source_data:
-        data:
-            src: "/backup_data/mysql/tpcc/2500/data.tar.gz"
-            dst: "./test_tmp/data"
-        log:
-            src: "/backup_data/mysql/tpcc/2500/log.tar.gz"
-            dst: "./test_tmp/log"
+tar_data: "/backup_data/mysql/tpcc/2500/"

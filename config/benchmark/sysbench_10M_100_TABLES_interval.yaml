@@ -20,11 +20,4 @@ benchmark:
         mysql-user: "root"
     extra_args: "run"
 
-drives:
-    source_data:
-        data:
-            src: "/backup_data/mysql/sysbench/10M_ROWS_100_TABLES/data.tar.gz"
-            dst: "./test_tmp/data"
-        log:
-            src: "/backup_data/mysql/sysbench/10M_ROWS_100_TABLES/log.tar.gz"
-            dst: "./test_tmp/data"
+tar_data: "/backup_data/mysql/sysbench/10M_ROWS_100_TABLES/"
