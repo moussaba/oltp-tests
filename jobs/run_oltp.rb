@@ -1,5 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','common','swr_common.rb'))
-require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchmarks','swr_benchmarks.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchmarks','swr_mysql_benchmarks.rb'))
 
 class JobRunOltp < SwrJob
 
