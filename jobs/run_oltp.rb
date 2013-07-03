@@ -10,7 +10,7 @@ class JobRunOltp < SwrJob
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
     @config["benchmark"]["run_time"] = @config['env']["SWR_RUNTIME"]
-    @benchmarks = SwrBenchmarks.new
+    @benchmarks = SwrMySqlBenchmarks.new
     @benchmarks.set_parameters(@config)
     if @config['env']["SWR_TEST"] == "sysbench-readonly"
       @configs["benchmark"]["named_args"]["oltp-read-only"]="on"
