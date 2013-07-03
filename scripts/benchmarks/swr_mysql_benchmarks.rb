@@ -31,8 +31,8 @@ class SwrMySqlBenchmarks
     return SwrBenchmarkTemplate.new(args,mysql)
   end
 
-  def set_parameters(config,args)
-    bench = get_new(args)
+  def set_parameters(config)
+    bench = get_new(config['benchmark'])
     bench.set_parameters(config)
   end
 

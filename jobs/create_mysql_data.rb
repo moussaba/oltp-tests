@@ -1,5 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','common','swr_common.rb'))
-require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchmarks','swr_benchmarks.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchmarks','swr_mysql_benchmarks.rb'))
 
 class JobCreateMySqlData < SwrJob
 
@@ -9,7 +9,7 @@ class JobCreateMySqlData < SwrJob
     @datadir = @config["mysql"]["named_args"]["datadir"]
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
-    @benchmarks = SwrBenchmarks.new
+    @benchmarks = SwrMySqlBenchmarks.new
     @benchmarks.set_parameters(@config)
   end
 
