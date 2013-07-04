@@ -79,7 +79,7 @@ class JobRunOltp < SwrJob
     src = File.join(srcdir,filename + ".tar")
     srcgz = src + ".gz"
     srcbz = src + ".bz2"
-    if file_exists?(src))
+    if file_exists?(src)
       @fileutils.su_tar " -C #{dstdir} ", " -xf #{src}", ".", verbose
     elsif file_exists?(srcgz)
       @fileutils.su_tar " -C #{dstdir} ", " -xzf #{srcgz}", ".", verbose
