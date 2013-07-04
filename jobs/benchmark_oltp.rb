@@ -41,6 +41,8 @@ class JobRunOltp < SwrJob
 
   def setup(verbose)
     shell = SwrShell.new
+    puts "------kill all-------------"
+    @benchmarks.kill_all(verbose)
     puts "------umount-------------"
     @fileutils.sync verbose
     cmd = "sudo umount " + @drive
