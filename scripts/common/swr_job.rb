@@ -10,8 +10,48 @@ class SwrJob
     @basedir = Dir.pwd
     config = process_configfiles(args)
     @config = scrub_paths(config)
-    #print_config(@config)
     @fileutils = SwrFileUtils.new
+    @required_env_vars = Array.new
+    @optional_env_vars = Array.new
+    @required_config_sections = Array.new
+  end
+
+  #formats an useful error message string
+  def help_string()
+    str  = "The follow options are to be given as environment variables or commandline arguments:\n"
+    @required_env_vars.each do |v|
+      str += "  #{v}=VALUE\n"
+    end
+    @optional_env_vars.each do |v|
+      str += "  [OPTIONAL]  #{v}=VALUE\n"
+    end
+    str += "\nThe YAML config files need to contain the following sections:\n"
+    @required_config_sections.each do |v|
+      str += "  #{v}\n"
+    end
+    str += "YAML files are passed with an environment variable with the form,"
+    str += "SWR_CONFIGFILE_* or passed as paths to the commandline arguments.\n"
+    return str
+  end
+
+  #Does a rough check of the options to see if this job was called correctly
+  def validate_config()
+    error_msg = help_string()
+    if @config['env'] == nil then raise error_msg end
+    fail = false
+    @required_env_vars.each do |v|
+      if @config['env'][v] == nil
+        error_msg += "\n--->Missing env var #{v}\n"
+        fail = true
+      end
+    end
+    @required_config_sections.each do |v|
+      if @config[v] == nil
+        error_msg += "\n--->Missing config file section #{v}\n"
+        fail = true
+      end
+    end
+    if fail then raise error_msg end
   end
 
   #A job has a @config hash full of setting useful for the various layers

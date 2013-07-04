@@ -6,12 +6,12 @@ class SwrTpcc < SwrBenchmarkTemplate
     @args["kill_all"] = ["mysql", "tpcc"]
   end
 
-  def set_benchmark_warmup_time
-    @args["short_args"]["r"] = @args["warm_up_time"]
+  def set_benchmark_warmup_time(warm_up_time)
+    @args["short_args"]["r"] = warm_up_time
   end
 
-  def set_benchmark_run_time
-    @args["short_args"]["l"] = @args["run_time"]
+  def set_benchmark_run_time(run_time)
+    @args["short_args"]["l"] = run_time
   end
 
   def warmup(verbose=false)

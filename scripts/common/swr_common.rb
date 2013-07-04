@@ -1,6 +1,5 @@
 require File.join(File.dirname(__FILE__),'swr_drive.rb')
 require File.join(File.dirname(__FILE__),'swr_drive_info.rb')
-require File.join(File.dirname(__FILE__),'swr_drive_handler.rb')
 require File.join(File.dirname(__FILE__),'swr_file_utils.rb')
 require File.join(File.dirname(__FILE__),'swr_job.rb')
 require File.join(File.dirname(__FILE__),'swr_mysqld.rb')

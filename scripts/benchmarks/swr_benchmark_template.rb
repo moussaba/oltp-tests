@@ -132,10 +132,10 @@ class SwrBenchmarkTemplate
     return shell.background_execute(cmd,verbose)
   end
 
-  def set_benchmark_warmup_time
+  def set_benchmark_warmup_time(warm_up_time)
   end
 
-  def set_benchmark_run_time
+  def set_benchmark_run_time(run_time)
   end
 
   def stop(verbose=false,status_can_be_nonzero=true)

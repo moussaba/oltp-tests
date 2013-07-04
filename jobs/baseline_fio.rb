@@ -15,7 +15,7 @@ class JobBaselineFio < SwrJob
     return shell.execute(cmd,verbose,status_can_be_nonzero=true)
 
   end
-  
+
   def part_drive(dev)
     dr = SwrDrive.new #is @drive the right var for this? debug later
     parts = Array.new
@@ -29,20 +29,20 @@ class JobBaselineFio < SwrJob
     label = @config["partition"]["format"]["label"]
     dr.format(dev, file_system_type, extra_args , verbose=true, label )
   end
-  
+
   def doit(dev,verbose)
     puts "------starting fio------------"
     fio = SwrFio.new(@config)
-    fio.args["extra_args"] = "fio_command_file.txt" 
+    fio.args["extra_args"] = "fio_command_file.txt"
     common_params = @config["global"]
     common_params["filename"] = dev
     @config["jobs"].each do |run_name,j,k,l,m|
       puts "------fio run '#{run_name}'------------"
-      make_command_file(common_params, run_name)        
+      make_command_file(common_params, run_name)
       fio.start(verbose)
     end
   end
-  
+
   def make_command_file(common_params, run_name)
     f = File.new("fio_command_file.txt", "w")
     f.puts "[global]"
@@ -53,7 +53,7 @@ class JobBaselineFio < SwrJob
         f.puts "#{key}=#{value}"
       end
     end
-    
+
     #this section creates a job name based on job specific parameters instead of run_name
     #this keeps runs from overwriting each other's log files
     #it constructs the name in the order the parameters are entered in the yaml config script
@@ -65,20 +65,18 @@ class JobBaselineFio < SwrJob
       end
       @run_name = @run_name + "_" if i + 1 < @config["jobs"][run_name].length
     end
-    puts "run name is #{@run_name}"
     #probably want to add device name to end of filename example "_rssda"
     f.puts "[#{@run_name}]"
-    
+
     @config["jobs"][run_name].each do |key, value|
       if value == nil
-        puts "#{key}"
         f.puts "#{key}"
       else
-        puts "#{key}=#{value}"
         f.puts "#{key}=#{value}"
       end
     end
-  f.close
+    f.close
+    puts `cat fio_command_file.txt`
   end
 end
 

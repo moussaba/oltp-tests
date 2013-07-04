@@ -1,11 +1,23 @@
 require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','common','swr_common.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchmarks','swr_mysql_benchmarks.rb'))
 
+# Must have @config['env'] optiosn for both tpcc and sysbench
+#
+#--for sysbench--
+# SWR_MILLIONS_OF_ROWS=10
+# SWR_NUMBER_OF_TABLES=100
+#
+#--for tpcc--
+# SWR_WAREHOUSES=2500
+
 class JobCreateMySqlData < SwrJob
 
   def initialize(args)
     super(args)
-
+    @required_env_vars = ["SWR_DRIVE"]
+    @optional_env_vars = ["SWR_MILLIONS_OF_ROWS","SWR_NUMBER_OF_TABLES","SWR_WAREHOUSES"]
+    @required_config_sections = ["benchmark","mysql","tar_data"]
+    validate_config()
     @datadir = @config["mysql"]["named_args"]["datadir"]
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]

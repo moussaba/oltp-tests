@@ -5,16 +5,14 @@ class JobRunOltp < SwrJob
 
   def initialize(args)
     super(args)
-
+    @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
+    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION"]
+    @required_config_sections = ["benchmark","mysql","tar_data"]
+    validate_config()
     @datadir = @config["mysql"]["named_args"]["datadir"]
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
-    @config["benchmark"]["run_time"] = @config['env']["SWR_RUNTIME"]
     @benchmarks = SwrMySqlBenchmarks.new
-    @benchmarks.set_parameters(@config)
-    if @config['env']["SWR_TEST"] == "sysbench-readonly"
-      @configs["benchmark"]["named_args"]["oltp-read-only"]="on"
-    end
   end
 
   def copy_data?
@@ -78,12 +76,15 @@ class JobRunOltp < SwrJob
   end
 
   def do_untar(dstdir,srcdir,filename,verbose)
-    if file_exists?(File.join(srcdir,filename+"tar"))
+    src = File.join(srcdir,filename + ".tar")
+    srcgz = src + ".gz"
+    srcbz = src + ".bz2"
+    if file_exists?(src))
       @fileutils.su_tar " -C #{dstdir} ", " -xf #{src}", ".", verbose
-    elsif file_exists?(File.join(srcdir,filename+"tar.gz"))
-      @fileutils.su_tar " -C #{dstdir} ", " -xzf #{src}", ".", verbose
-    elsif file_exists?(File.join(srcdir,filename+"tar.bz2"))
-      @fileutils.su_tar " -C #{dstdir} ", " -xjf #{src}", ".", verbose
+    elsif file_exists?(srcgz)
+      @fileutils.su_tar " -C #{dstdir} ", " -xzf #{srcgz}", ".", verbose
+    elsif file_exists?(srcbz)
+      @fileutils.su_tar " -C #{dstdir} ", " -xjf #{srcbz}", ".", verbose
     else
       raise "not found trolls"
     end
@@ -108,7 +109,7 @@ class JobRunOltp < SwrJob
     sleep 60
     puts "------setting up benchmark------------"
     @benchmark = @benchmarks.get_new(@config["benchmark"],@db)
-    @benchmark.set_benchmark_run_time
+    @benchmark.set_benchmark_run_time(@config['env']["SWR_RUNTIME"])
     puts "------making benchmark------------"
     @benchmark.make(verbose)
     puts "------warming up mysqld------------"
@@ -137,20 +138,8 @@ end
 j = SwrDriveInfo.new
 j.print
 verbose = true
-configs = Array.new
-configs << "config/mysql/mysql_percona.yaml"
-configs << "config/scenario/24G_1trial_1800.yaml"
 
-case ENV["SWR_TEST"]
-  when "sysbench"
-    configs << "config/benchmark/sysbench_10M_100_TABLES_interval.yaml"
-  when "sysbench-readonly"
-    configs << "config/benchmark/sysbench_10M_100_TABLES_interval.yaml"
-  when "tpcc"
-    configs << "config/benchmark/tpcc_2500.yaml"
-end
-
-job = JobRunOltp.new(configs)
+job = JobRunOltp.new(ARGV)
 
 job.setup(verbose)
 job.doit(verbose)

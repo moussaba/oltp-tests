@@ -7,12 +7,12 @@ class SwrSysbench < SwrBenchmarkTemplate
     @args["kill_all"] = ["mysql", "sysbench"]
   end
 
-  def set_benchmark_warmup_time
-    @args["named_args"]["max-time"] = @args["warm_up_time"]
+  def set_benchmark_warmup_time(warm_up_time)
+    @args["named_args"]["max-time"] = warm_up_time
   end
 
-  def set_benchmark_run_time
-    @args["named_args"]["max-time"] = @args["run_time"]
+  def set_benchmark_run_time(run_time)
+    @args["named_args"]["max-time"] = run_time
   end
 
   def warmup(verbose=false)
