@@ -1,0 +1,15 @@
+.deps/
+Makefile
+config.h
+config.log
+config.status
+stamp-h1
+autom4te.cache/
+comment-43-format.o
+crc32.o
+snappy-framed-format.o
+snappy-in-java-format.o
+snappy-java-format.o
+snzip-format.o
+snzip.o
+snzip
