@@ -19,3 +19,6 @@ snappy_unittest
 snappy_unittest-snappy-test.o
 snappy_unittest-snappy_unittest.o
 
+include/
+lib/
+share/
