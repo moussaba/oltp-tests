@@ -75,7 +75,7 @@ class JobCreateMySqlData < SwrJob
   def start_db(verbose)
     puts "------initializing mysql db------------"
     shell = SwrShell.new
-    cmd = "sudo mysql_install_db --datadir=#{@datadir]}"
+    cmd = "sudo mysql_install_db --datadir=#{@datadir}"
     shell.execute(cmd,verbose)
     @db = SwrMysqld.new(@config["mysql"])
     puts "------starting mysqld -----------------"
