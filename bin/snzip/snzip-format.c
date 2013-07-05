@@ -274,6 +274,8 @@ stream_format_t snzip_format = {
   "snzip",
   "https://github.com/kubo/snzip",
   "snz",
+  SNZ_MAGIC,
+  SNZ_MAGIC_LEN,
   snzip_compress,
   snzip_uncompress,
 };

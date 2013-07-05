@@ -1,6 +1,6 @@
 /* -*- indent-tabs-mode: nil -*-
  *
- * Copyright 2011-2013 Kubo Takehiro <kubo@jiubao.org>
+ * Copyright 2011-2012 Kubo Takehiro <kubo@jiubao.org>
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -75,9 +75,8 @@ static void copy_file_attributes(int infd, int outfd, const char *outfile);
 static void show_usage(const char *progname, int exit_code);
 
 static stream_format_t *stream_formats[] = {
-  &framing2_format,
-  &framing_format,
   &snzip_format,
+  &snappy_framed_format,
   &snappy_java_format,
   &snappy_in_java_format,
   &comment_43_format,
@@ -108,44 +107,32 @@ static stream_format_t *find_stream_format_by_suffix(const char *suffix)
 
 static stream_format_t *find_stream_format_by_file_header(FILE *fp)
 {
-  /*  framing        {0xff, 0x06, 0x00, 's',  'N',  'a',  'P',  'p',  'Y'}
-   *  framing2       {0xff, 0x06, 0x00, 0x00, 's',  'N',  'a',  'P',  'p',  'Y'}
-   *  snzip          {'S',  'N',  'Z'}
-   *  snappy-java    {0x82, 'S',  'N',  'A',  'P',  'P',  'Y',  0x00}
-   *  snappy-in-java {'s',  'n',  'a',  'p',  'p',  'y',  0x00}
-   */
-#define CHK(chr) if (getc_unlocked(fp) != (chr)) goto error
-  switch (getc_unlocked(fp)) {
-  case 0xff:
-    CHK(0x06); CHK(0x00);
-    switch (getc_unlocked(fp)) {
-    case 's':
-      switch (getc_unlocked(fp)) {
-      case 'N':
-        CHK('a'); CHK('P'); CHK('p'); CHK('Y');
-        return &framing_format;
-      case 'n':
-        CHK('a'); CHK('p'); CHK('p'); CHK('y');
-        return &comment_43_format;
-      }
-      break;
-    case 0x00:
-      CHK('s');  CHK('N'); CHK('a'); CHK('P'); CHK('p'); CHK('Y');
-      return &framing2_format;
+  char buf[FILE_HEADER_LENGTH_MAX];
+  int len = 0, idx;
+
+  while (len < FILE_HEADER_LENGTH_MAX) {
+    int c = getc_unlocked(fp);
+    if (c == -1) {
+      fprintf(stderr, "Unexpected EOF\n");
+      return NULL;
     }
-    break;
-  case 'S':
-    CHK('N'); CHK('Z');
-    return &snzip_format;
-  case 0x82:
-    CHK('S'); CHK('N'); CHK('A'); CHK('P'); CHK('P'); CHK('Y'); CHK(0x00);
-    return &snappy_java_format;
-  case 's':
-    CHK('n'); CHK('a'); CHK('p'); CHK('p'); CHK('y'); CHK(0x00);
-    return &snappy_in_java_format;
+    buf[len++] = c;
+    for (idx = 0; idx < NUM_OF_STREAM_FORMATS; idx++) {
+      stream_format_t *fmt = stream_formats[idx];
+      if (fmt->file_header_length == len) {
+        trace("compare magic with %s.\n", fmt->name);
+        if (memcmp(fmt->file_header, buf, len) == 0) {
+          trace("%s is found.\n", fmt->name);
+          return fmt;
+        }
+      }
+    }
   }
- error:
-  fprintf(stderr, "Unknown file header\n");
+  fprintf(stderr, "Unknown file header:");
+  for (idx = 0; idx < len; idx++) {
+    fprintf(stderr, " 0x%02x", (unsigned char)buf[idx]);
+  }
+  putc('\n', stderr);
   return NULL;
 }
 
@@ -187,7 +174,7 @@ int main(int argc, char **argv)
   size_t rsize = 0;
   size_t wsize = 0;
   const char *format_name = NULL;
-  stream_format_t *fmt = &DEFAULT_FORMAT;
+  stream_format_t *fmt = &snzip_format;
 
   char *progname = strrchr(argv[0], PATH_DELIMITER);
   if (progname != NULL) {
@@ -208,7 +195,7 @@ int main(int argc, char **argv)
     opt_keep = TRUE;
   }
   if (strstr(progname, "snappy") != NULL) {
-    fmt = &framing2_format;
+    fmt = &snappy_framed_format;
   }
 
   while ((opt = getopt(argc, argv, "cdkt:hb:B:R:W:T")) != -1) {
@@ -265,6 +252,12 @@ int main(int argc, char **argv)
 
   if (optind == argc) {
     trace("no arguments are set.\n");
+    if (isatty(1)) {
+      /* stdout is a terminal */
+      fprintf(stderr, "I won't write compressed data to a terminal.\n");
+      fprintf(stderr, "For help, type: '%s -h'.\n", progname);
+      return 1;
+    }
 
     if (opt_uncompress) {
       int skip_magic = 0;
@@ -277,12 +270,6 @@ int main(int argc, char **argv)
       }
       return fmt->uncompress(stdin, stdout, skip_magic);
     } else {
-      if (isatty(1)) {
-        /* stdout is a terminal */
-        fprintf(stderr, "I won't write compressed data to a terminal.\n");
-        fprintf(stderr, "For help, type: '%s -h'.\n", progname);
-        return 1;
-      }
       return fmt->compress(stdin, stdout, block_size);
     }
   }
@@ -475,13 +462,13 @@ static void show_usage(const char *progname, int exit_code)
   fprintf(stderr,
           PACKAGE_STRING "\n"
           "\n"
-          "  Usage: %s [option ...] [file ...]\n"
+          "  usage: %s [option ...] [file ...]\n"
           "\n"
           "  general options:\n"
           "   -c       output to standard output, keep original files unchanged\n"
           "   -d       decompress\n"
           "   -k       keep (don't delete) input files\n"
-          "   -t name  file format name. see below. The default format is %s.\n"
+          "   -t name  file format name. see below.\n"
           "   -h       give this help\n"
           "\n"
           "  tuning options:\n"
@@ -492,7 +479,7 @@ static void show_usage(const char *progname, int exit_code)
           "   -T       trace for debug\n"
           "\n"
           "  supported formats:\n",
-          progname, DEFAULT_FORMAT.name);
+          progname);
 
   max_name_len = strlen("name");
   max_suffix_len = strlen("suffix");
