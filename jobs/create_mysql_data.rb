@@ -91,6 +91,7 @@ class JobCreateMySqlData < SwrJob
     puts "stdout[#{stdout.chomp}]"
     puts "stderr[#{stderr.chomp}]"
     puts "status[" + status.to_s + "]"
+  end
 
   def doit(verbose)
     start_db(verbose)
