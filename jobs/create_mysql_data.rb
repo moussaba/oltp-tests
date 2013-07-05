@@ -61,8 +61,8 @@ class JobCreateMySqlData < SwrJob
       @fileutils.su_tar " -C #{@logdir} "," -cf #{File.join(@config["tar_data"],"log.tar")}",".", verbose
     end
     shell = SwrShell.new
-    cmd = "cd #{@config["tar_data"]}; du -h; sudo touch md5sums.txt; sudo chmod a+rw md5sums.txt; sudo md5sum data.tar.gz >> md5sums.txt; sudo md5sum log.tar.gz >> md5sums.txt;"
-    shell.execute(cmd,verbose)
+    cmd = "cd #{@config["tar_data"]}; du -h; sudo touch md5sums.txt; sudo chmod a+rw md5sums.txt; sudo md5sum data.tar* >> md5sums.txt; sudo md5sum log.tar* >> md5sums.txt;"
+    shell.execute(cmd,verbose,true)
     @fileutils.sync verbose
   end
 
