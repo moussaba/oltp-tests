@@ -69,7 +69,7 @@ class JobCreateMySqlData < SwrJob
   def teardown(verbose)
     shell = SwrShell.new
     puts "------umount----------"
-    shell.execute("sudo umount #{@drive}",true,status_can_be_nonzero=true)
+    shell.execute("sudo umount #{@drive}",true,true)
   end
 
   def start_db(verbose)
