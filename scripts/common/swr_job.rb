@@ -16,6 +16,11 @@ class SwrJob
     @required_config_sections = Array.new
   end
 
+  def timestamp
+    t = Time.now
+    return t.strftime("%T")
+  end
+
   #formats an useful error message string
   def help_string()
     str  = "The follow options are to be given as environment variables or commandline arguments:\n"

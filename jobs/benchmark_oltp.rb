@@ -41,27 +41,27 @@ class JobRunOltp < SwrJob
 
   def setup(verbose)
     shell = SwrShell.new
-    puts "------kill all-------------"
+    puts "------kill all-------------" + timestamp
     @benchmarks.kill_all(verbose)
-    puts "------umount-------------"
+    puts "------umount-------------" + timestamp
     @fileutils.sync verbose
     cmd = "sudo umount " + @drive
     shell.execute(cmd,true,true)
     cmd = "sudo umount " + @datadir
     shell.execute(cmd,true,true)
     if pre_condition?
-      puts "-----Pre Conditionning Drive with Sequential Fill -----------"
+      puts "-----Pre Conditionning Drive with Sequential Fill -----------" + timestamp
       cmd = "sudo dd if=/dev/zero of=#{@drive} bs=1M"
       shell.execute(cmd,true,true)
     end
 
     if copy_data? || pre_condition?
-      puts "------clean up-----------"
+      puts "------clean up-----------" + timestamp
       @fileutils.su_rm_rf @datadir, verbose
       @fileutils.su_rm_rf @logdir, verbose
-      puts "-----Making File System---------"
+      puts "-----Making File System---------" + timestamp
       shell.execute("sudo mkfs.ext4 -F #{@drive}",true)
-      puts "------mkdirs-------------"
+      puts "------mkdirs-------------" + timestamp
       if not file_exists?(@datadir)
         @fileutils.su_mkdir_p @datadir, verbose
       end
@@ -69,10 +69,10 @@ class JobRunOltp < SwrJob
         @fileutils.su_mkdir_p @logdir, verbose
       end
     end
-    puts "------mount--------------"
+    puts "------mount--------------" + timestamp
     @fileutils.su_mount @drive + " -o nobarrier " + @datadir
     if copy_data? || pre_condition?
-      puts "------cp data-------------"
+      puts "------cp data-------------" + timestamp
       copy_data(verbose)
     end
   end
@@ -81,12 +81,17 @@ class JobRunOltp < SwrJob
     src = File.join(srcdir,filename + ".tar")
     srcgz = src + ".gz"
     srcbz = src + ".bz2"
+    srcsnz = src + ".snz"
     if file_exists?(src)
-      @fileutils.su_tar " -C #{dstdir} ", " -xf #{src}", ".", verbose
+      @fileutils.su_tar " -C #{dstdir} ", " -xf #{src}", verbose
     elsif file_exists?(srcgz)
-      @fileutils.su_tar " -C #{dstdir} ", " -xzf #{srcgz}", ".", verbose
+      @fileutils.su_tar " -C #{dstdir} ", " -xzf #{srcgz}", verbose
     elsif file_exists?(srcbz)
-      @fileutils.su_tar " -C #{dstdir} ", " -xjf #{srcbz}", ".", verbose
+      @fileutils.su_tar " -C #{dstdir} ", " -xjf #{srcbz}", verbose
+    elsif file_exists?(srcsnz)
+      shell = SwrShell.new
+      cmd = "snzip -dc #{srcsnz} | tar -C #{dstdir} -x"
+      shell.su_execute(cmd,verbose)
     else
       raise "not found trolls"
     end
@@ -98,30 +103,30 @@ class JobRunOltp < SwrJob
   end
 
   def teardown(verbose)
-    puts "------umount----------"
+    puts "------umount----------" + timestamp
     shell = SwrShell.new
     cmd = "sudo umount " + @drive
     shell.execute(cmd,true,true)
   end
 
   def start_db(verbose)
-    puts "------starting mysqld ------------"
+    puts "------starting mysqld ------------" + timestamp
     @db = SwrMysqld.new(@config["mysql"])
     @db.start(verbose)
     sleep 60
-    puts "------setting up benchmark------------"
+    puts "------setting up benchmark------------" + timestamp
     @benchmark = @benchmarks.get_new(@config["benchmark"],@db)
     @benchmark.set_benchmark_run_time(@config['env']["SWR_RUNTIME"])
-    puts "------making benchmark------------"
+    puts "------making benchmark------------" + timestamp
     @benchmark.make(verbose)
-    puts "------warming up mysqld------------"
+    puts "------warming up mysqld------------" + timestamp
     @benchmark.warmup(verbose)
   end
 
   def shutdown_db(verbose)
     @db.innodb_stats(verbose)
     @db.shutdown(verbose)
-    puts "-mysql had this to say ----------------"
+    puts "-mysql had this to say ----------------" + timestamp
     stdout, stderr, status, cmd = @db.wait
     puts "cmd[#{cmd}]"
     puts "stdout[#{stdout.chomp}]"
@@ -143,8 +148,10 @@ verbose = true
 
 job = JobRunOltp.new(ARGV)
 
+puts Time.now.strftime("%Y/%m/%d - %T")
 job.setup(verbose)
 job.doit(verbose)
 job.teardown(verbose)
+puts Time.now.strftime("%Y/%m/%d - %T")
 
 j.print

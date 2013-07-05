@@ -27,40 +27,43 @@ class JobCreateMySqlData < SwrJob
 
   def setup(verbose)
     shell = SwrShell.new
-    puts "------umount----------"
+    puts "------umount----------" + timestamp
     @fileutils.sync verbose
     shell.execute("sudo umount #{@drive}",true,status_can_be_nonzero=true)
-    puts "-----Making File System---------"
+    puts "-----Making File System---------" + timestamp
     shell.execute("sudo mkfs.ext4 -F #{@drive}",true)
-    puts "------mkdirs-------------"
+    puts "------mkdirs-------------" + timestamp
     if not file_exists?(@datadir)
       @fileutils.su_mkdir_p @datadir, verbose
     end
-    puts "------mount--------------"
+    puts "------mount--------------" + timestamp
     @fileutils.su_mount @drive + " " + @datadir
     if not file_exists?(@logdir)
       if @logdir != ''
           @fileutils.su_mkdir_p @logdir, verbose
       end
     end
-    puts "-----cleaning datadir----"
+    puts "-----cleaning datadir----" + timestamp
     dirall = @datadir+"/*"
     @fileutils.su_rm_rf dirall, verbose
   end
 
+  #IMPROVE?  Can't pick individual files to include into data.tar vs log.tar?
   def tar_data(verbose)
+    shell = SwrShell.new
     @fileutils.su_mkdir_p @config["tar_data"], verbose
     @fileutils.su_du_sh "#{@datadir}", verbose
-    @fileutils.su_tar " -C #{@datadir} "," -cf #{File.join(@config["tar_data"],"data.tar")}", ".", verbose
+    cmd = "tar -C #{@datadir} -c . | snzip | #{File.join(@config["tar_data"],"data.tar.snz")}"
+    shell.su_execute(cmd,verbose)
     if @datadir == @logdir
       #log and data dirs are the same so creating empty log.tar.gz
       @fileutils.su_mkdir_p "empty", verbose
       @fileutils.su_tar " -C empty "," -cf #{File.join(@config["tar_data"],"log.tar")}",".", verbose
       @fileutils.su_rm_rf "empty", verbose
     elsif @logdir != ''
-      @fileutils.su_tar " -C #{@logdir} "," -cf #{File.join(@config["tar_data"],"log.tar")}",".", verbose
+      cmd = "tar -C #{@logdir} -c . | snzip | #{File.join(@config["tar_data"],"log.tar.snz")}"
+      shell.su_execute(cmd,verbose)
     end
-    shell = SwrShell.new
     cmd = "cd #{@config["tar_data"]}; du -h; sudo touch md5sums.txt; sudo chmod a+rw md5sums.txt; sudo md5sum data.tar* >> md5sums.txt; sudo md5sum log.tar* >> md5sums.txt;"
     shell.execute(cmd,verbose,true)
     @fileutils.sync verbose
@@ -68,24 +71,24 @@ class JobCreateMySqlData < SwrJob
 
   def teardown(verbose)
     shell = SwrShell.new
-    puts "------umount----------"
+    puts "------umount----------" + timestamp
     shell.execute("sudo umount #{@drive}",true,true)
   end
 
   def start_db(verbose)
-    puts "------initializing mysql db------------"
+    puts "------initializing mysql db------------" + timestamp
     shell = SwrShell.new
     cmd = "sudo mysql_install_db --datadir=#{@datadir}"
     shell.execute(cmd,verbose)
     @db = SwrMysqld.new(@config["mysql"])
-    puts "------starting mysqld -----------------"
+    puts "------starting mysqld -----------------" + timestamp
     @db.start(verbose)
     sleep 60
   end
 
   def shutdown_db(verbose)
     @db.shutdown(verbose)
-    puts "-mysql had this to say ----------------"
+    puts "-mysql had this to say ----------------" + timestamp
     stdout, stderr, status, cmd = @db.wait
     puts "cmd[#{cmd}]"
     puts "stdout[#{stdout.chomp}]"
@@ -95,7 +98,7 @@ class JobCreateMySqlData < SwrJob
 
   def doit(verbose)
     start_db(verbose)
-    puts "------starting benchmark------------"
+    puts "------starting benchmark------------" + timestamp
     @benchmark = @benchmarks.get_new(@config["benchmark"],@db)
     @benchmark.make(verbose)
     @benchmark.create(verbose)
@@ -107,7 +110,10 @@ end
 
 verbose = true
 job = JobCreateMySqlData.new(ARGV)
+
+puts Time.now.strftime("%Y/%m/%d - %T")
 job.setup(verbose)
 job.doit(verbose)
 job.tar_data(verbose)
 job.teardown(verbose)
+puts Time.now.strftime("%Y/%m/%d - %T")

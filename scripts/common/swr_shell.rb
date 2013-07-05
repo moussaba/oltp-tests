@@ -17,6 +17,10 @@ class SwrShell
     return execute_no_override(cmd, verbose, status_can_be_nonzero, sudo)
   end
 
+  def su_execute(cmd, verbose=false, status_can_be_nonzero=false)
+    return @shell.execute(cmd, verbose, status_can_be_nonzero, true)
+  end
+
   def execute_no_override(cmd, verbose=false, status_can_be_nonzero=false, sudo=false)
     return @shell.execute(cmd, verbose, status_can_be_nonzero, sudo)
   end
