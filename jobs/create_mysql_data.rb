@@ -37,7 +37,7 @@ class JobCreateMySqlData < SwrJob
       @fileutils.su_mkdir_p @datadir, verbose
     end
     puts "------mount--------------"
-    @fileutils.su_mount drive + " " + @datadir
+    @fileutils.su_mount @drive + " " + @datadir
     if not file_exists?(@logdir)
       if @logdir != ''
           @fileutils.su_mkdir_p @logdir, verbose
