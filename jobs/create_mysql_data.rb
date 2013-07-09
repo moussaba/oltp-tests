@@ -53,7 +53,7 @@ class JobCreateMySqlData < SwrJob
     shell = SwrShell.new
     @fileutils.su_mkdir_p @config["tar_data"], verbose
     @fileutils.su_du_sh "#{@datadir}", verbose
-    cmd = "tar -C #{@datadir} -c . | snzip | #{File.join(@config["tar_data"],"data.tar.snz")}"
+    cmd = "tar -C #{@datadir} -c . | snzip > #{File.join(@config["tar_data"],"data.tar.snz")}"
     shell.su_execute(cmd,verbose)
     if @datadir == @logdir
       #log and data dirs are the same so creating empty log.tar.gz
@@ -61,7 +61,7 @@ class JobCreateMySqlData < SwrJob
       @fileutils.su_tar " -C empty "," -cf #{File.join(@config["tar_data"],"log.tar")}",".", verbose
       @fileutils.su_rm_rf "empty", verbose
     elsif @logdir != ''
-      cmd = "tar -C #{@logdir} -c . | snzip | #{File.join(@config["tar_data"],"log.tar.snz")}"
+      cmd = "tar -C #{@logdir} -c . | snzip > #{File.join(@config["tar_data"],"log.tar.snz")}"
       shell.su_execute(cmd,verbose)
     end
     cmd = "cd #{@config["tar_data"]}; du -h; sudo touch md5sums.txt; sudo chmod a+rw md5sums.txt; sudo md5sum data.tar* >> md5sums.txt; sudo md5sum log.tar* >> md5sums.txt;"
