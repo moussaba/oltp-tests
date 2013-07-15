@@ -23,27 +23,38 @@ oltp_params['SLAVE_NAME'] = slave
 
 bnum = Time.now.to_i.to_s
 client.job.build("reboot_slave",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 client.job.build("thirtyseconds",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 oltp_params['RUN_NAME'] = "first sysbench run"
 client.job.build("benchmark_oltp--sysbench",oltp_params)
+sleep 2
 
 bnum = Time.now.to_i.to_s
 client.job.build("reboot_slave",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 client.job.build("thirtyseconds",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 oltp_params['RUN_NAME'] = "second -nocopy- sysbench run"
 oltp_params['SWR_COPY_DATA'] = false
 client.job.build("benchmark_oltp--sysbench",oltp_params)
+sleep 2
 
 bnum = Time.now.to_i.to_s
 client.job.build("reboot_slave",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 client.job.build("thirtyseconds",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 oltp_params['RUN_NAME'] = "first sysbench-readonly run"
 oltp_params['SWR_COPY_DATA'] = true
-client.job.build("benchmark_oltp--sysbench-readonly",oltp_params)
+client.job.build("benchmark_oltp--sybench-readonly",oltp_params)
+sleep 2
 
 bnum = Time.now.to_i.to_s
 client.job.build("reboot_slave",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 client.job.build("thirtyseconds",{"SLAVE_NAME" => slave, "MY_BUILD_NUMBER" => bnum })
+sleep 2
 oltp_params['RUN_NAME'] = "first tpcc run"
 client.job.build("benchmark_oltp--tpcc",oltp_params)
 
