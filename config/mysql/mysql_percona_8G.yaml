@@ -3,7 +3,7 @@ mysql:
     named_args:
         user: "root"
         datadir: "./test_tmp/data"
-        innodb_buffer_pool_size: 24G
+        innodb_buffer_pool_size: 8G
         innodb_data_home_dir: "./test_tmp/data"
         innodb_log_group_home_dir: "./test_tmp/data"
         innodb_data_file_path: "ibdata1:100M:autoextend"
