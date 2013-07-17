@@ -1,17 +1,17 @@
-#tested with Centos6.4 run as root
+#tested with Centos6.3 run as root
 export http_proxy=http://proxy.micron.com:8080
 echo "proxy=http://proxy.micron.com:8080" >> /etc/yum.conf
 
-yum install ruby
-yum install rubygems
+yum -y install ruby
+yum -y install rubygems
 gem install open4
 gem install net-ssh
 
-#yum install openssl_devel
-#rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
+sudo yum install -y gcc ruby-devel libxml2 libxml2-devel libxslt libxslt-devel
+gem install jenkins_api_client
 
 wget -r -l 1 -nd -A rpm -R "*debuginfo*" http://www.percona.com/redir/downloads/Percona-Server-5.5/Percona-Server-5.5.30-30.2/RPM/rhel6/x86_64/
-yum remove mysql mysql-devel mysql-libs
+yum -y remove mysql mysql-devel mysql-libs
 
 
 rpm -ivh Percona-Server-shared-55-*.rpm

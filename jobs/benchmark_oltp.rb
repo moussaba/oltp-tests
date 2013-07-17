@@ -61,13 +61,13 @@ class JobRunOltp < SwrJob
       @fileutils.su_rm_rf @logdir, verbose
       puts "-----Making File System---------" + timestamp
       shell.execute("sudo mkfs.ext4 -F #{@drive}",true)
-      puts "------mkdirs-------------" + timestamp
-      if not file_exists?(@datadir)
-        @fileutils.su_mkdir_p @datadir, verbose
-      end
-      if not file_exists?(@logdir)
-        @fileutils.su_mkdir_p @logdir, verbose
-      end
+    end
+    puts "------mkdirs-------------" + timestamp
+    if not file_exists?(@datadir)
+      @fileutils.su_mkdir_p @datadir, verbose
+    end
+    if not file_exists?(@logdir)
+      @fileutils.su_mkdir_p @logdir, verbose
     end
     puts "------mount--------------" + timestamp
     @fileutils.su_mount @drive + " -o nobarrier " + @datadir
