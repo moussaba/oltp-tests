@@ -18,7 +18,7 @@
           <name>SLAVE_NAME</name>
           <description></description>
           <allowedSlaves>
-            <string>uk882-p420-jenkins</string>
+            <string>mazer</string>
           </allowedSlaves>
           <defaultSlaves>
             <string>master</string>

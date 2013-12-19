@@ -23,10 +23,10 @@
           <name>SLAVE_NAME</name>
           <description></description>
           <allowedSlaves>
-            <string>uk882-p420-jenkins</string>
+            <string>mazer</string>
           </allowedSlaves>
           <defaultSlaves>
-            <string>uk882-p420-jenkins</string>
+            <string>mazer</string>
           </defaultSlaves>
           <triggerIfResult>allowMultiSelectionForConcurrentBuilds</triggerIfResult>
           <allowMultiNodeSelection>true</allowMultiNodeSelection>
@@ -52,7 +52,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>aggressive_cleanup</name>
+        <name>master</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <disableSubmodules>false</disableSubmodules>

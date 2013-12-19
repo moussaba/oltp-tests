@@ -1,8 +1,7 @@
 # ensure Jenkins has Node and Label parameter plugin installed
 require 'jenkins_api_client'
 
-#ip = '10.102.215.213'
-ip = '10.102.215.236'
+ip = 'swr-jenkins.micron.com'
 user = 'jenkins'
 pass = '123456'
 
@@ -11,7 +10,7 @@ client = JenkinsApi::Client.new(:server_ip => ip,:username => user,:password => 
 
 drive = "/dev/rssda"
 runtime = "600"
-slave = "uk882-p420-jenkins"
+slave = "mazer"
 
 oltp_params = Hash.new
 oltp_params['SWR_DRIVE'] = drive
