@@ -20,4 +20,4 @@ benchmark:
         mysql-user: "root"
     extra_args: "run"
 
-tar_data: "/backup_data/mysql/sysbench/10M_ROWS_100_TABLES/"
+tar_data: "/backup_data/mysql/sysbench/4M_ROWS_50_TABLES/"
