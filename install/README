@@ -1,0 +1,9 @@
+To add a host as jenkins slave:
+  ruby jenkins/add_slave.rb --jenkins swr-jenkins.micron.com --slave 10.102.215.15 --slavename mazer
+
+This also adds ssh keys to the slave host, that enables checking out this repo in a slave.
+
+Once this repo is checkout on a slave you can run centos/centos.sh to install percona mysql and other important packages.
+
+Running centos/snzip.sh will install snzip for compressing packages, it's a dependancy for our sysbench scripts.
+

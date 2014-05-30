@@ -1,7 +1,7 @@
 require 'optparse'
 require 'rubygems'
 require 'jenkins_api_client'
-require File.join(File.dirname(__FILE__),'..','..','common','swr_common.rb')
+require File.join(File.dirname(__FILE__),'..','common','swr_common.rb')
 
 ip = ""
 user = "jenkins"
