@@ -1,7 +1,7 @@
 require 'optparse'
 require 'rubygems'
 require 'jenkins_api_client'
-require File.join(File.dirname(__FILE__),'..','common','swr_common.rb')
+require File.join(File.dirname(__FILE__),'..','..','scripts','common','swr_common.rb')
 
 ip = ""
 user = "jenkins"
@@ -73,7 +73,7 @@ params = {}
 params[:name] = slavename
 params[:slave_host] = slave
 params[:private_key_file] = ""
-params[:slave_user] = ""
+#params[:slave_user] = ""
 params[:description] = ""
 params[:remote_fs] = "/home/#{user}"
 params[:executors] = 1
