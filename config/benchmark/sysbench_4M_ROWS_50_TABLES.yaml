@@ -14,7 +14,7 @@ benchmark:
         percentile: 99
         rand-type: "pareto"
         forced-shutdown: 1
-        num-threads: 4
+        num-threads: 2
         max-requests: 0
         report-interval: 1
         mysql-user: "root"
