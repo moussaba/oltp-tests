@@ -12,6 +12,8 @@ class JobRunOltp < SwrJob
     @datadir = @config["mysql"]["named_args"]["datadir"]
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
+    @port = @config['env']["PORT"]
+    @config["mysql"]["named_args"]["port"] = @config['env']["PORT"]
     @benchmarks = SwrMySqlBenchmarks.new
   end
 
