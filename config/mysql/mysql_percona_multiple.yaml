@@ -49,8 +49,8 @@ mysql:
         #myisam_recover:
         skip-grant-tables:
         skip-name-resolve:
-	port: 3306
-	pid: ./test_tmp/data/mysql.pid
-	socket: ./test_tmp/data/
+        port: 3306
+        pid: ./test_tmp/data/mysql.pid
+        socket: ./test_tmp/data/
 
     extra_args: ""
