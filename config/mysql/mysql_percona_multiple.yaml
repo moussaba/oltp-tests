@@ -51,6 +51,6 @@ mysql:
         skip-name-resolve:
         port: 3306
         pid: ./test_tmp/data/mysql.pid
-        socket: ./test_tmp/data/
+        socket: ./test_tmp/data/mysql.sock
 
     extra_args: ""
