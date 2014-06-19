@@ -14,7 +14,7 @@ class JobRunOltp < SwrJob
     @drive = @config['env']["SWR_DRIVE"]
     @config["mysql"]["named_args"]["port"] = @config['env']["SWR_PORT"].to_s
     @config["benchmark"]["named_args"]["mysql-port"] = @config['env']["SWR_PORT"].to_s
-    @config["benchmark"]["named_args"]["mysql-socket"] = @config["benchmark"]["named_args"]["socket"]
+    @config["benchmark"]["named_args"]["mysql-socket"] = @config["mysql"]["named_args"]["socket"]
     @benchmarks = SwrMySqlBenchmarks.new
   end
 
