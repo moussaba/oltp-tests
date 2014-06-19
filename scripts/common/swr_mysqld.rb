@@ -87,7 +87,7 @@ class SwrMysqld
 
   def innodb_stats(verbose=false)
     
-    cmd = "mysql -u root -e \"show engine innodb status\\G\""
+    cmd = "mysql -u root #{@socket_arg} -e \"show engine innodb status\\G\""
     shell = SwrShell.new
     return shell.execute(cmd,verbose)
   end
