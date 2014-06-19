@@ -50,6 +50,8 @@ class JobRunOltp < SwrJob
       end
     end
     return true
+  end
+
   def setup(verbose)
     shell = SwrShell.new
     if kill_all?
