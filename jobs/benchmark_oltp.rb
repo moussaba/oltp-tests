@@ -6,7 +6,7 @@ class JobRunOltp < SwrJob
   def initialize(args)
     super(args)
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
-    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION"]
+    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","PORT"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
     validate_config()
     @datadir = @config["mysql"]["named_args"]["datadir"]
