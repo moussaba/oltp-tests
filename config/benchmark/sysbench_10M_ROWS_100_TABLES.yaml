@@ -18,6 +18,8 @@ benchmark:
         max-requests: 0
         report-interval: 1
         mysql-user: "root"
+        mysql-port: 3306
+        mysql-socket: "/var/lib/mysql/mysql.sock"
     extra_args: "run"
 
 tar_data: "/backup_data/mysql/sysbench/10M_ROWS_100_TABLES/"
