@@ -6,7 +6,7 @@ class JobRunOltp < SwrJob
   def initialize(args)
     super(args)
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
-    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT"]
+    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT","SWR_KILLALL"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
     validate_config()
     @datadir = @config["mysql"]["named_args"]["datadir"]
@@ -42,10 +42,20 @@ class JobRunOltp < SwrJob
     return true
   end
 
+  def kill_all?
+    killall = @config['env']["SWR_KILLALL"]
+    if killall != nil
+      if killall == "false"
+        return false
+      end
+    end
+    return true
   def setup(verbose)
     shell = SwrShell.new
-    puts "------kill all-------------" + timestamp
-    @benchmarks.kill_all(verbose)
+    if kill_all?
+	puts "------kill all-------------" + timestamp
+	@benchmarks.kill_all(verbose)
+    end
     puts "------umount-------------" + timestamp
     @fileutils.sync verbose
     cmd = "sudo umount " + @drive
