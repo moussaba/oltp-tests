@@ -6,17 +6,14 @@ class JobRunOltp < SwrJob
   def initialize(args)
     super(args)
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
-    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","PORT"]
+    @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
     validate_config()
     @datadir = @config["mysql"]["named_args"]["datadir"]
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
-    puts "INNO " + @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
-    puts "PORT 2 is " + @config["mysql"]["named_args"]["port"].to_s
-    #puts "PORT 1 is " + @config["mysql"]["named_args"]["port"]
-    @config["mysql"]["named_args"]["port"] = @config['env']["PORT"].to_s
-    puts "PORT is " + @config['env']["PORT"]
+    @config["mysql"]["named_args"]["port"] = @config['env']["SWR_PORT"].to_s
+    puts "PORT is " + @config['env']["SWR_PORT"]
     @benchmarks = SwrMySqlBenchmarks.new
   end
 
