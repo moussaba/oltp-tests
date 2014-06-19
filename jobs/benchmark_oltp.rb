@@ -13,9 +13,9 @@ class JobRunOltp < SwrJob
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
     puts "INNO " + @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
-    puts "PORT 2 is " + @config["mysql"]["named_args"]["port"]
+    puts "PORT 2 is " + @config["mysql"]["named_args"]["port"].to_s
     #puts "PORT 1 is " + @config["mysql"]["named_args"]["port"]
-    @config["mysql"]["named_args"]["port"] = @config['env']["PORT"]
+    @config["mysql"]["named_args"]["port"] = @config['env']["PORT"].to_s
     puts "PORT is " + @config['env']["PORT"]
     @benchmarks = SwrMySqlBenchmarks.new
   end
