@@ -97,6 +97,10 @@ class JobRunOltp < SwrJob
     srcgz = src + ".gz"
     srcbz = src + ".bz2"
     srcsnz = src + ".snz"
+
+    puts "----------SRCDIR----------" + srcsnz
+    puts "----------DSTDIR---------"  + dstdir 
+
     if file_exists?(src)
       @fileutils.su_tar " -C #{dstdir} ", " -xf #{src}", verbose
     elsif file_exists?(srcgz)
