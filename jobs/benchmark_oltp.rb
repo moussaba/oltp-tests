@@ -118,7 +118,6 @@ class JobRunOltp < SwrJob
 
   def copy_data(verbose)
     do_untar(@datadir,@config['tar_data'],"data",verbose)
-    do_untar(@logdir,@config['tar_data'],"log",verbose)
   end
 
   def teardown(verbose)
