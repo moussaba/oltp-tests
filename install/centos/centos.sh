@@ -27,3 +27,6 @@ rpm -ivh Percona-Server-server-55-*.rpm
 rpm -ivh Percona-Server-devel-55-*.rpm
 
 rm -f *.rpm
+
+chkconfig mysql off
+service mysql stop
