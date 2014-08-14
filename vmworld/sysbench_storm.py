@@ -17,4 +17,4 @@ def __run_sysbench(self):
 
 
 print "Starting TEST right here, right now"
-_run_sysbench()
+__run_sysbench()
