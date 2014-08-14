@@ -6,14 +6,14 @@ import paramiko
 
 class SSHClient:
 
-    def __init__(self,hostname,username):
+    def __init__(self,hostname,user,passwd):
         self.hostname = hostname
         self.username = username
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            self.ssh.connect(hostname,username='jenkins',password='123456')
+            self.ssh.connect(hostname,username=user,password=passwd)
             self.transport = self.ssh.get_transport()
         except socket.error as e:
             print "Failed to Connect to %s" % hostname
@@ -123,7 +123,12 @@ class SSHClient:
     def connected(self):
         return self.transport is not None
 
-ssh = SSHClient("superbox","jenkins")
 
-ssh.execute("cat /proc/meminfo")
-#ssh.copy("/home/mba/L2/santa/config.yaml","~/")
+    def main():
+        ssh = SSHClient("superbox","jenkins","123456")
+
+        ssh.execute("cat /proc/meminfo")
+
+if __name__ == '__main__':
+    main()
+
