@@ -4,9 +4,9 @@ require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchm
 class JobRunOltp < SwrJob
 
   def initialize(args)
-    puts "Printing ARGUMENTS"
+    puts "Printing ARGUMENTS TOP"
     super(args)
-    puts "Printing ARGUMENTS VAR"
+    puts "Printing ARGUMENTS after super"
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
     @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT","SWR_KILLALL"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
