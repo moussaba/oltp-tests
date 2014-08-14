@@ -8,7 +8,7 @@ class SSHClient:
 
     def __init__(self,hostname,user,passwd):
         self.hostname = hostname
-        self.username = username
+        self.username = user
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
