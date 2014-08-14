@@ -18,6 +18,7 @@ class JobRunOltp < SwrJob
     @config["benchmark"]["named_args"]["mysql-socket"] = @config["mysql"]["named_args"]["socket"]
     @benchmarks = SwrMySqlBenchmarks.new
 
+    puts "Printing ARGUMENTS VAR"
     @required_env_vars.each do |var|
       puts var 
     end
