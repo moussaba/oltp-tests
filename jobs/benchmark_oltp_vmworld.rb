@@ -6,6 +6,7 @@ class JobRunOltp < SwrJob
   def initialize(args)
     puts "Printing ARGUMENTS"
     super(args)
+    puts "Printing ARGUMENTS VAR"
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
     @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT","SWR_KILLALL"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
@@ -18,7 +19,6 @@ class JobRunOltp < SwrJob
     @config["benchmark"]["named_args"]["mysql-socket"] = @config["mysql"]["named_args"]["socket"]
     @benchmarks = SwrMySqlBenchmarks.new
 
-    puts "Printing ARGUMENTS VAR"
     @required_env_vars.each do |var|
       puts var 
     end
