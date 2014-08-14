@@ -16,6 +16,15 @@ class JobRunOltp < SwrJob
     @config["benchmark"]["named_args"]["mysql-port"] = @config['env']["SWR_PORT"].to_s
     @config["benchmark"]["named_args"]["mysql-socket"] = @config["mysql"]["named_args"]["socket"]
     @benchmarks = SwrMySqlBenchmarks.new
+
+    @required_env_vars.each do |var|
+      puts var 
+    end
+
+    @optional_env_vars.each do |var|
+      puts var 
+    end
+    exit 0
   end
 
   def copy_data?
