@@ -10,7 +10,7 @@ class JobRunOltp < SwrJob
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
     @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT","SWR_KILLALL"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
-    validate_config()
+    #validate_config()
     @datadir = @config["mysql"]["named_args"]["datadir"]
     @logdir = @config["mysql"]["named_args"]["innodb_log_group_home_dir"]
     @drive = @config['env']["SWR_DRIVE"]
