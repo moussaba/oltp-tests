@@ -17,6 +17,9 @@ class JobRunOltp < SwrJob
     @config["mysql"]["named_args"]["port"] = @config['env']["SWR_PORT"].to_s
     @config["benchmark"]["named_args"]["mysql-port"] = @config['env']["SWR_PORT"].to_s
     @config["benchmark"]["named_args"]["mysql-socket"] = @config["mysql"]["named_args"]["socket"]
+    @config["mysql"]["named_args"]["innodb_buffer_pool_size"] = @config['env']["SWR_BUFFER_POOL"].to_s + "G"
+    puts "BUFFER POOL SIZE "
+    puts @config["mysql"]["named_args"]["innodb_buffer_pool_size"]
     @benchmarks = SwrMySqlBenchmarks.new
 
     @required_env_vars.each do |var|
