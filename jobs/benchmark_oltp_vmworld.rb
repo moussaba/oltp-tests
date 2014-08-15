@@ -4,9 +4,7 @@ require File.expand_path(File.join(File.dirname(__FILE__),'..','scripts','benchm
 class JobRunOltp < SwrJob
 
   def initialize(args)
-    puts "Printing ARGUMENTS TOP"
     super(args)
-    puts "Printing ARGUMENTS after super"
     @required_env_vars = ["SWR_DRIVE","SWR_RUNTIME"]
     @optional_env_vars = ["SWR_COPY_DATA","SWR_PRECONDITION","SWR_PORT","SWR_KILLALL"]
     @required_config_sections = ["benchmark","mysql","tar_data"]
@@ -17,9 +15,10 @@ class JobRunOltp < SwrJob
     @config["mysql"]["named_args"]["port"] = @config['env']["SWR_PORT"].to_s
     @config["benchmark"]["named_args"]["mysql-port"] = @config['env']["SWR_PORT"].to_s
     @config["benchmark"]["named_args"]["mysql-socket"] = @config["mysql"]["named_args"]["socket"]
+    puts "BUFFER POOL SIZE BEFORE" +  @config["mysql"]["named_args"]["innodb_buffer_pool_size"]
     @config["mysql"]["named_args"]["innodb_buffer_pool_size"] = @config['env']["SWR_BUFFER_POOL"].to_s + "G"
-    puts "BUFFER POOL SIZE "
-    puts @config["mysql"]["named_args"]["innodb_buffer_pool_size"]
+    puts "ENV BUF POOL " + @config['env']["SWR_BUFFER_POOL"].to_s
+    puts "BUFFER POOL SIZE " +  @config["mysql"]["named_args"]["innodb_buffer_pool_size"]
     @benchmarks = SwrMySqlBenchmarks.new
 
     @required_env_vars.each do |var|
