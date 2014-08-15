@@ -18,6 +18,7 @@ class JobRunOltp < SwrJob
     puts "BUFFER POOL SIZE BEFORE" +  @config["mysql"]["named_args"]["innodb_buffer_pool_size"]
     @config["mysql"]["named_args"]["innodb_buffer_pool_size"] = @config['env']["SWR_BUFFER_POOL"].to_s + "G"
     puts "ENV BUF POOL " + @config['env']["SWR_BUFFER_POOL"].to_s
+    puts "ENV BUF DRIVE " + @config['env']["SWR_DRIVE"].to_s
     puts "BUFFER POOL SIZE " +  @config["mysql"]["named_args"]["innodb_buffer_pool_size"]
     @benchmarks = SwrMySqlBenchmarks.new
 
