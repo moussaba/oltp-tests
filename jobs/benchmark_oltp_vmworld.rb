@@ -29,7 +29,6 @@ class JobRunOltp < SwrJob
     @optional_env_vars.each do |var|
       puts  @config['env'][var]
     end
-    exit 0
   end
 
   def copy_data?
