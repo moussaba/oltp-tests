@@ -1,0 +1,25 @@
+mysql:
+    dbname: "sbtest"
+
+benchmark:
+    name: "sysbench"
+    binary: "./bin/sysbench/sysbench-percona"
+    named_args:
+        oltp-read-only: "off"
+        test: "./bin/sysbench/tests/db/oltp.lua"
+        oltp-table-size: 1000000
+        oltp_tables_count: 1
+        max-time: 60
+        rand-init: "on"
+        percentile: 99
+        rand-type: "pareto"
+        forced-shutdown: 1
+        num-threads: 32
+        max-requests: 0
+        report-interval: 1
+        mysql-user: "root"
+        mysql-port: 3306
+        mysql-socket: "/var/lib/mysql/mysql.sock"
+    extra_args: "run"
+
+tar_data: "/backup_data/mysql/sysbench/10M_ROWS_1_TABLES/"
