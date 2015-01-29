@@ -4,4 +4,4 @@ benchmark:
 
 mysql:
     named_args:
-        innodb_buffer_pool_size: 24G
+        innodb_buffer_pool_size: 48G
