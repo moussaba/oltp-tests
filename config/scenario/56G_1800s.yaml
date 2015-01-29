@@ -1,0 +1,7 @@
+benchmark:
+    warm_up_time: 30
+    run_time: 1800
+
+mysql:
+    named_args:
+        innodb_buffer_pool_size: 56G
